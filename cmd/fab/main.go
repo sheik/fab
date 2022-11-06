@@ -2,6 +2,7 @@ package main
 
 import (
 	_ "embed"
+	"fmt"
 	"github.com/sheik/fab"
 	"github.com/sheik/fab/pkg/log"
 	"os"
@@ -11,8 +12,13 @@ import (
 //go:embed templates/fab.go
 var initFile []byte
 
+//go:embed buildinfo.txt
+var version string
+
 func main() {
 	var args string
+
+	fmt.Println("fab", version)
 
 	if len(os.Args) > 1 {
 		args = strings.Join(os.Args[1:], " ")
