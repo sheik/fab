@@ -3,13 +3,12 @@ package fab
 import (
 	"errors"
 	"fmt"
-	"github.com/sheik/create/pkg/shell"
 	"strconv"
 	"strings"
 )
 
 func RepoClean(args ...interface{}) error {
-	err := shell.Exec("git diff-index --quiet HEAD")
+	err := Exec("git diff-index --quiet HEAD")
 	if err != nil {
 		return errors.New("git.RepoClean: git repository is dirty, commit and try again")
 	}
@@ -29,5 +28,5 @@ func IncrementMinorVersion(version string) string {
 }
 
 func GetVersion() string {
-	return shell.Output("git describe --tags | sed 's/-/_/g'")
+	return Output("git describe --tags | sed 's/-/_/g'")
 }
