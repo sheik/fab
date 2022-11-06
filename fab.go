@@ -9,27 +9,19 @@ import (
 )
 
 var (
-	buildContainer = fab.Container(image).Mount("$PWD", "/code").Env("CGO_ENABLED", "0")
-	image          = "builder:latest"
-	currentTag     = fab.GetVersion()
-	nextTag        = fab.IncrementMinorVersion(currentTag)
+	nextTag = fab.IncrementMinorVersion(fab.GetVersion())
 )
 
 var plan = fab.Plan{
 	"clean": {
-		Command: "rm -rf fab",
-	},
-	"build-container": {
-		Command: "docker build . -f builder/Dockerfile -t" + image,
-		Check:   fab.Check{fab.ImageExists, image},
-	},
-	"build": {
-		Command: buildContainer.Run("go build ./cmd/fab"),
-		Depends: "clean build-container",
+		Command: "rm -rf $(ls ./cmd)",
 	},
 	"test": {
-		Command: "docker ps",
-		Depends: "build",
+		Command: "go test ./...",
+	},
+	"build": {
+		Command: "go build -o . ./...",
+		Depends: "clean test",
 		Default: true,
 	},
 	"tag": {
