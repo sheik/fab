@@ -98,7 +98,7 @@ var UpdateStep = Step{
 		GOPRIVATE=github.com/sheik go install github.com/sheik/fab/cmd/fab@latest
 		GOPRIVATE=github.com/sheik go get github.com/sheik/fab@latest 
 		if [[ -d ./vendor ]]; then
-			echo "notice: updating vendor directory"
+			echo "fab: updating vendor directory"
 			go mod vendor
 		fi
 		`,

@@ -28,9 +28,7 @@ func main() {
 				return
 			}
 			fab.Exec(`
-			go clean -modcache ;
-			rm -rf $HOME/go/pkg/sumdb ;
-			GOPRIVATE=github.com/sheik go mod tidy
+			GOPRIVATE=github.com/sheik go get github.com/sheik/fab@latest 
 			`)
 			return
 		}
