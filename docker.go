@@ -15,7 +15,14 @@ func Container(name string) *ContainerObj {
 	}
 }
 
-func ImageExists(args any) bool {
+func ImageExists(image string) Check {
+	return Check{
+		Func: ImageExistsInterface,
+		Args: image,
+	}
+}
+
+func ImageExistsInterface(args any) bool {
 	return ImageExistsFunc(args.(string))
 }
 

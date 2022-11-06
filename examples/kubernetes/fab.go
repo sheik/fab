@@ -16,7 +16,7 @@ var plan = fab.Plan{
 	},
 	"build-container": {
 		Command: "docker build . -f builder/Dockerfile -t" + image,
-		Check:   fab.Check{fab.ImageExists, image},
+		Check:   fab.ImageExists(image),
 	},
 	"build": {
 		Command: buildContainer.Run("go build ./cmd/fab"),
@@ -24,17 +24,17 @@ var plan = fab.Plan{
 	},
 	"minikube": {
 		Command: "minikube start",
-		Check:   fab.Check{fab.ReturnZero, "minikube status"},
+		Check:   fab.ReturnZero("minikube status"),
 	},
 	"redis-cluster": {
 		Command: "helm install redis-cluster bitnami/redis-cluster",
 		Depends: "minikube",
-		Check:   fab.Check{fab.ReturnZero, "helm list | grep redis-cluster"},
+		Check:   fab.ReturnZero("helm list | grep redis-cluster"),
 	},
 	"kafka-cluster": {
 		Command: "helm install kafka-cluster --set replicaCount=3 bitnami/kafka",
 		Depends: "minikube",
-		Check:   fab.Check{fab.ReturnZero, "helm list | grep kafka-cluster"},
+		Check:   fab.ReturnZero("helm list | grep kafka-cluster"),
 	},
 	"network": {
 		Depends: "redis-cluster kafka-cluster",
