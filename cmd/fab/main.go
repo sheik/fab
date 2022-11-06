@@ -18,12 +18,13 @@ var version string
 func main() {
 	var args string
 
-	fmt.Println("fab", version)
-
 	if len(os.Args) > 1 {
 		args = strings.Join(os.Args[1:], " ")
 
 		switch os.Args[1] {
+		case "version":
+			fmt.Println("fab", version)
+			return
 		case "update":
 			fab.Run(fab.Plan{"update": fab.UpdateStep})
 			return
