@@ -111,7 +111,7 @@ var HelpStep = Step{
 
 func (steps Plan) PrintHelp(args ...interface{}) error {
 	var items []string
-	for name, _ := range steps {
+	for name := range steps {
 		items = append(items, name)
 	}
 	sort.Strings(items)

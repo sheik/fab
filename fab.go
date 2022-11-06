@@ -16,8 +16,17 @@ var plan = fab.Plan{
 	"clean": {
 		Command: "rm -rf $(ls ./cmd)",
 	},
+	"install-staticcheck": {
+		Command: "go install honnef.co/go/tools/cmd/staticcheck@latest",
+		Check:   fab.ReturnZero("stat $HOME/go/bin/staticcheck 2>&1 >/dev/null"),
+	},
+	"lint": {
+		Command: "go vet ./... && staticcheck ./...",
+		Depends: "install-staticcheck",
+	},
 	"test": {
 		Command: "go test ./...",
+		Depends: "lint",
 	},
 	"build": {
 		Command: "go build -o . ./...",

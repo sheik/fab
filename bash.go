@@ -33,7 +33,14 @@ func Exec(cmdline string) error {
 	return cmd.Run()
 }
 
-func ReturnZero(args any) bool {
+func ReturnZero(command string) Check {
+	return Check{
+		Func: ReturnZeroInterface,
+		Args: command,
+	}
+}
+
+func ReturnZeroInterface(args any) bool {
 	return ReturnZeroFunc(args.(string))
 }
 
