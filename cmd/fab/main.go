@@ -27,7 +27,7 @@ func main() {
 				log.Error("unable to create fab.go: %s", err)
 				return
 			}
-			fab.Exec("go mod tidy")
+			fab.Exec("GOPRIVATE=github.com go mod tidy")
 			return
 		}
 
