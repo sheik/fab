@@ -96,20 +96,16 @@ func Complete(args ...string) []string {
 var UpdateStep = Step{
 	Command: `
 		export GOPRIVATE=github.com
-		go install github.com/sheik/create/cmd/create@latest
+		go install github.com/sheik/fab/cmd/fab@latest
 		touch go.sum
 		rm -f go.sum
 		go clean -modcache
 		go mod tidy
-		go get -u github.com/sheik/create/pkg/build
-		go get -u github.com/sheik/create/pkg/docker
-		go get -u github.com/sheik/create/pkg/git
-		go get -u github.com/sheik/create/pkg/plan
-		go get -u github.com/sheik/create/pkg/shell
-		go get -u github.com/sheik/create/pkg/util
-		go mod vendor
+		if [[ -d ./vendor ]]; then
+			go mod vendor
+		fi
 		`,
-	Help: "update create",
+	Help: "update fab",
 }
 
 var HelpStep = Step{
