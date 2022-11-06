@@ -95,13 +95,12 @@ func Complete(args ...string) []string {
 
 var UpdateStep = Step{
 	Command: `
-		export GOPRIVATE=github.com/sheik
-		go install github.com/sheik/fab/cmd/fab@latest
+		GOPRIVATE=github.com/sheik go install github.com/sheik/fab/cmd/fab@latest
 		touch go.sum
 		rm -f go.sum
 		go clean -modcache
 		rm -rf $HOME/go/pkg/sumdb
-		go mod tidy
+		GOPRIVATE=github.com/sheik go mod tidy
 		if [[ -d ./vendor ]]; then
 			go mod vendor
 		fi
