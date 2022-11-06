@@ -96,12 +96,10 @@ func Complete(args ...string) []string {
 var UpdateStep = Step{
 	Command: `
 		GOPRIVATE=github.com/sheik go install github.com/sheik/fab/cmd/fab@latest
-		go clean -modcache
-		rm -rf $HOME/go/pkg/sumdb
 		GOPRIVATE=github.com/sheik go get github.com/sheik/fab@latest 
 		if [[ -d ./vendor ]]; then
 			echo "notice: updating vendor directory"
-			go mod vendor -v
+			go mod vendor
 		fi
 		`,
 	Help: "update fab",
