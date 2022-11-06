@@ -8,8 +8,6 @@ import "github.com/sheik/fab"
 var (
 	buildContainer = fab.Container(image).Mount("$PWD", "/code").Env("CGO_ENABLED", "0")
 	image          = "builder:latest"
-	currentTag     = fab.Output("git describe --tags")
-	nextTag        = fab.IncrementMinorVersion(currentTag)
 )
 
 var plan = fab.Plan{
@@ -24,19 +22,27 @@ var plan = fab.Plan{
 		Command: buildContainer.Run("go build ./cmd/fab"),
 		Depends: "clean build-container",
 	},
+	"minikube": {
+		Command: "minikube start",
+		Check:   fab.Check{fab.ReturnZero, "minikube status"},
+	},
+	"redis-cluster": {
+		Command: "helm install redis-cluster bitnami/redis-cluster",
+		Depends: "minikube",
+		Check:   fab.Check{fab.ReturnZero, "helm list | grep redis-cluster"},
+	},
+	"kafka-cluster": {
+		Command: "helm install kafka-cluster --set replicaCount=3 bitnami/kafka",
+		Depends: "minikube",
+		Check:   fab.Check{fab.ReturnZero, "helm list | grep kafka-cluster"},
+	},
+	"network": {
+		Depends: "redis-cluster kafka-cluster",
+	},
 	"test": {
 		Command: "docker ps",
 		Depends: "build network",
 		Default: true,
-	},
-	"tag": {
-		Command: fmt.Sprintf(`
-			echo "%s" > ./cmd/fab/buildinfo.txt
-			git commit ./cmd/fab/buildinfo.txt -m "updating tag to %s"
-			git tag %s
-			git push origin %s
-		`, nextTag, nextTag, nextTag, nextTag),
-		Depends: "test",
 	},
 }
 
