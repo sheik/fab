@@ -100,7 +100,8 @@ var UpdateStep = Step{
 		rm -rf $HOME/go/pkg/sumdb
 		GOPRIVATE=github.com/sheik go get github.com/sheik/fab@latest 
 		if [[ -d ./vendor ]]; then
-			go mod vendor
+			echo "notice: updating vendor directory"
+			go mod vendor -v
 		fi
 		`,
 	Help: "update fab",
