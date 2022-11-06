@@ -3,12 +3,15 @@
 
 package main
 
-import "github.com/sheik/fab"
+import (
+	"fmt"
+	"github.com/sheik/fab"
+)
 
 var (
 	buildContainer = fab.Container(image).Mount("$PWD", "/code").Env("CGO_ENABLED", "0")
 	image          = "builder:latest"
-	currentTag     = fab.Output("git describe --tags")
+	currentTag     = fab.GetVersion()
 	nextTag        = fab.IncrementMinorVersion(currentTag)
 )
 
@@ -26,7 +29,7 @@ var plan = fab.Plan{
 	},
 	"test": {
 		Command: "docker ps",
-		Depends: "build network",
+		Depends: "build",
 		Default: true,
 	},
 	"tag": {
