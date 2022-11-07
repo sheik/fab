@@ -5,22 +5,12 @@ package main
 
 import "github.com/sheik/fab"
 
-var (
-	buildContainer = fab.Container(image).Mount("$PWD", "/code").Env("CGO_ENABLED", "0")
-	image          = "builder:latest"
-)
-
 var plan = fab.Plan{
 	"clean": {
-		Command: "rm -rf fab",
-	},
-	"build-container": {
-		Command: "docker build . -f builder/Dockerfile -t" + image,
-		Check:   fab.ImageExists(image),
+		Command: "docker rmi -f producer",
 	},
 	"build": {
-		Command: buildContainer.Run("go build ./cmd/fab"),
-		Depends: "clean build-container",
+		Command: "docker build . -t producer",
 	},
 	"minikube": {
 		Command: "minikube start",
@@ -36,11 +26,19 @@ var plan = fab.Plan{
 		Depends: "minikube",
 		Check:   fab.ReturnZero("helm list | grep kafka-cluster"),
 	},
+	"producer": {
+		Command: "helm install producer ./helm/producer",
+		Depends: "minikube",
+		Check:   fab.ReturnZero("helm list | grep producer"),
+	},
 	"network": {
-		Depends: "redis-cluster kafka-cluster",
+		Depends: "redis-cluster kafka-cluster producer",
+	},
+	"network-down": {
+		Command: "helm uninstall redis-cluster kafka-cluster producer",
 	},
 	"test": {
-		Command: "docker ps",
+		Command: "kubectl get pods",
 		Depends: "build network",
 		Default: true,
 	},

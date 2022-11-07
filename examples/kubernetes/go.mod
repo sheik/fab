@@ -2,7 +2,7 @@ module kubernetes-example
 
 go 1.19
 
-require github.com/sheik/fab v0.0.15
+require github.com/sheik/fab v0.0.16
 
 require (
 	github.com/creack/pty v1.1.18 // indirect
